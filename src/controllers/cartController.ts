@@ -109,15 +109,18 @@ export const getItemByProdId = async (
 
     if (!item) {
       return res
-        .status(404)
-        .send({ message: "Cart item with this prod id not found" });
+        .status(200)
+        .send({
+          message: "Cart item with this prod id not found",
+          found: false,
+        });
     }
 
     if (item.userId.toString() != userId) {
       return res.status(403).send({ message: "You are not the owner" });
     }
 
-    return res.status(200).send({ ...item.toObject() });
+    return res.status(200).send({ ...item.toObject(), found: true });
   } catch (error) {
     return res.status(500).send({ message: "Error fetching item", error });
   }
