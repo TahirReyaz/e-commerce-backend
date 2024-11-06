@@ -1,17 +1,20 @@
 import express from "express";
 
 import {
+  changeQuantity,
   createItem,
+  deleteItem,
+  getCart,
   getItem,
   getItemByProdId,
-  increaseQuantity,
 } from "../controllers/cartController";
 import { isAuthenticated } from "../middlewares";
 
 export default (router: express.Router) => {
-  router.post("/cart/:id/inc", isAuthenticated, increaseQuantity);
-  router.post("/cart/:id/dec", isAuthenticated, increaseQuantity);
+  router.post("/cart/:id/update-quantity", isAuthenticated, changeQuantity);
   router.post("/cart", isAuthenticated, createItem);
   router.get("/cart/cartid/:id", isAuthenticated, getItem);
   router.get("/cart/prodid/:id", isAuthenticated, getItemByProdId);
+  router.delete("/cart/:id", isAuthenticated, deleteItem);
+  router.get("/cart", isAuthenticated, getCart);
 };
