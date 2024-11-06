@@ -1,7 +1,9 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
+
 import { User } from "../models/User";
+import { JWT_SECRET } from "../utils/constants";
 
 export const registerUser = async (
   req: Request,
@@ -31,13 +33,9 @@ export const loginUser = async (req: Request, res: Response): Promise<any> => {
       return res.status(400).send({ message: "Invalid password" });
     }
 
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET as string,
-      {
-        expiresIn: "1d",
-      }
-    );
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "1d",
+    });
     return res.status(200).send({ token, username: user.username });
   } catch (error) {
     return res.status(500).send({ message: "Error logging in", error });
