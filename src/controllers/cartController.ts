@@ -108,12 +108,10 @@ export const getItemByProdId = async (
     const item = await Cart.findOne({ prodId: id, userId });
 
     if (!item) {
-      return res
-        .status(200)
-        .send({
-          message: "Cart item with this prod id not found",
-          found: false,
-        });
+      return res.status(200).send({
+        message: "Cart item with this prod id not found",
+        found: false,
+      });
     }
 
     if (item.userId.toString() != userId) {
@@ -154,6 +152,28 @@ export const getCart = async (
     const item = await Cart.find({ userId });
 
     return res.status(200).json(item);
+  } catch (error) {
+    return res.status(500).send({ message: "Error fetching cart", error });
+  }
+};
+
+export const placeOrder = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  const userId = req.userId;
+  try {
+    const isSuccess = Math.random() > 0.5;
+    if (isSuccess) {
+      await Cart.deleteMany({ userId });
+      return res
+        .status(200)
+        .json({ status: "success", message: "Payment successful" });
+    } else {
+      return res
+        .status(400)
+        .json({ status: "failure", message: "Payment failed" });
+    }
   } catch (error) {
     return res.status(500).send({ message: "Error fetching cart", error });
   }
